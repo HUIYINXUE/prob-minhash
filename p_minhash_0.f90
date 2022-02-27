@@ -7,8 +7,8 @@ subroutine p_minhash_0(W, n, m, upper, z)
     real(8) :: inv, h
     real(8), dimension(1:m) :: q
     integer :: i, k
-    real(4) :: mu
-    real(4) :: ZBQLEXP
+    real(8) :: mu
+    real(8) :: ZBQLEXP
 
     ! f2py intent(in) :: n, m, upper, W
     ! f2py intent(in,out) :: z
