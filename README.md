@@ -6,3 +6,5 @@ keywords: {clustering algorithms;device-to-device communication;estimation error
 url: https://doi.ieeecomputersociety.org/10.1109/TKDE.2020.3021176
 
 `randgen.f` is a copy from https://www.ucl.ac.uk/~ucakarc/work/randgen.html, but modified to allow call subroutine updating generator seed for more than once.
+
+Run `f2py -c -m p_minhash_0 p_minhash_0.f90 randgen.f --fcompiler=gnu95 --compiler=unix` to build the module first.
