@@ -21,7 +21,7 @@ subroutine p_minhash_1(W, n, m, upper, z)
 
     
     do d = 1,n
-        inv = 1 / real(W(2, i), 8)
+        inv = 1 / real(W(2, d), 8)
         call ZBQLINI(W(1, d))
         h = inv * ZBQLEXP(mu)
         do while (h .lt. MAXVAL(q))
