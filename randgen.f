@@ -1,11 +1,11 @@
 *******************************************************************
-********	FILE: randgen.f				***********
-********	AUTHORS: Richard Chandler		***********
-********		 (richard@stats.ucl.ac.uk)	***********
-********		 Paul Northrop 			***********
-********		 (northrop@stats.ox.ac.uk)	***********
-********	LAST MODIFIED: 26/8/03			***********
-********	See file randgen.txt for details	***********
+********  FILE: randgen.f       ***********
+********  AUTHORS: Richard Chandler   ***********
+********     (richard@stats.ucl.ac.uk)  ***********
+********     Paul Northrop      ***********
+********     (northrop@stats.ox.ac.uk)  ***********
+********  LAST MODIFIED: 26/8/03      ***********
+********  See file randgen.txt for details  ***********
 *******************************************************************
 
       BLOCK DATA ZBQLBD01
@@ -42,37 +42,37 @@
 *       variables because integer storage can't handle the
 *       numbers involved
 ******************************************************************
-*	ARGUMENTS
-*	=========
-*	SEED	(integer, input). User-input number which generates
-*		elements of the array ZBQLIX, which is subsequently used
-*		in the random number generation algorithm. If SEED=0,
-*		the array is seeded using the system clock if the
-*		FORTRAN implementation allows it.
+* ARGUMENTS
+* =========
+* SEED  (integer, input). User-input number which generates
+*   elements of the array ZBQLIX, which is subsequently used 
+*   in the random number generation algorithm. If SEED=0,
+*   the array is seeded using the system clock if the 
+*   FORTRAN implementation allows it.
 ******************************************************************
-*	PARAMETERS
-*	==========
-*	LFLNO	(integer). Number of lowest file handle to try when
-*		opening a temporary file to copy the system clock into.
-*		Default is 80 to keep out of the way of any existing
-*		open files (although the program keeps searching till
-*		it finds an available handle). If this causes problems,
-*               (which will only happen if handles 80 through 99 are
+* PARAMETERS
+* ==========
+* LFLNO (integer). Number of lowest file handle to try when
+*   opening a temporary file to copy the system clock into.
+*   Default is 80 to keep out of the way of any existing
+*   open files (although the program keeps searching till
+*   it finds an available handle). If this causes problems,
+*               (which will only happen if handles 80 through 99 are 
 *               already in use), decrease the default value.
 ******************************************************************
       INTEGER LFLNO
       PARAMETER (LFLNO=80)
 ******************************************************************
-*	VARIABLES
-*	=========
-*	SEED	See above
-*	ZBQLIX	Seed array for the random number generator. Defined
-*		in ZBQLBD01
-*	B,C	Used in congruential initialisation of ZBQLIX
-*	SS,MM,}	System clock secs, mins, hours and days
-*	HH,DD }
-*	FILNO	File handle used for temporary file
-*	INIT	Indicates whether generator has already been initialised
+* VARIABLES
+* =========
+* SEED  See above
+* ZBQLIX  Seed array for the random number generator. Defined
+*   in ZBQLBD01
+* B,C Used in congruential initialisation of ZBQLIX
+* SS,MM,} System clock secs, mins, hours and days
+* HH,DD }
+* FILNO File handle used for temporary file
+* INIT  Indicates whether generator has already been initialised
 *
       INTEGER SEED,SS,MM,HH,DD,FILNO,I
       INTEGER INIT
@@ -83,7 +83,7 @@
       SAVE INIT
 
 *
-*	Ensure we don't call this more than once in a program
+* Ensure we don't call this more than once in a program
 *
 !      IF (INIT.GE.1) THEN
 !       IF(INIT.EQ.1) THEN
@@ -101,20 +101,20 @@
 *       specified value of SEED.
 *
 *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-*>>>>>>>	NB FOR SYSTEMS WHICH DO NOT SUPPORT THE  >>>>>>>
-*>>>>>>>	(NON-STANDARD) 'CALL SYSTEM' COMMAND,    >>>>>>>
-*>>>>>>>	THIS WILL NOT WORK, AND THE FIRST CLAUSE >>>>>>>
-*>>>>>>>	OF THE FOLLOWING IF BLOCK SHOULD BE	 >>>>>>>
-*>>>>>>>	COMMENTED OUT.				 >>>>>>>
+*>>>>>>>  NB FOR SYSTEMS WHICH DO NOT SUPPORT THE  >>>>>>>
+*>>>>>>>  (NON-STANDARD) 'CALL SYSTEM' COMMAND,    >>>>>>>
+*>>>>>>>  THIS WILL NOT WORK, AND THE FIRST CLAUSE >>>>>>>
+*>>>>>>>  OF THE FOLLOWING IF BLOCK SHOULD BE  >>>>>>>
+*>>>>>>>  COMMENTED OUT.         >>>>>>>
 *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       IF (SEED.EQ.0) THEN
 *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-*>>>>>>>	COMMENT OUT FROM HERE IF YOU DON'T HAVE  >>>>>>>
-*>>>>>>>	'CALL SYSTEM' CAPABILITY ...		 >>>>>>>
+*>>>>>>>  COMMENT OUT FROM HERE IF YOU DON'T HAVE  >>>>>>>
+*>>>>>>>  'CALL SYSTEM' CAPABILITY ...     >>>>>>>
 *>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
        CALL SYSTEM(' date +%S%M%H%j > zbql1234.tmp')
 *
-*       Try all file numbers for LFLNO to 999
+*       Try all file numbers for LFLNO to 999 
 *
        FILNO = LFLNO
  10    OPEN(FILNO,FILE='zbql1234.tmp',ERR=11)
@@ -134,8 +134,8 @@
        DDD = DINT((DBLE(DD)/3.65D2) * B)
        TMPVAR1 = DMOD(DSS+DMM+DHH+DDD,B)
 *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-*<<<<<<<<	... TO HERE (END OF COMMENTING OUT FOR 	  <<<<<<<
-*<<<<<<<<	USERS WITHOUT 'CALL SYSTEM' CAPABILITY	  <<<<<<<
+*<<<<<<<< ... TO HERE (END OF COMMENTING OUT FOR    <<<<<<<
+*<<<<<<<< USERS WITHOUT 'CALL SYSTEM' CAPABILITY    <<<<<<<
 *<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       ELSE
        TMPVAR1 = DMOD(DBLE(SEED),B)
@@ -143,7 +143,7 @@
       ZBQLIX(1) = TMPVAR1
       DO 100 I = 2,43
        TMPVAR1 = ZBQLIX(I-1)*3.0269D4
-       TMPVAR1 = DMOD(TMPVAR1,B)
+       TMPVAR1 = DMOD(TMPVAR1,B)       
        ZBQLIX(I) = TMPVAR1
  100  CONTINUE
 
@@ -162,15 +162,15 @@
 *
 *       Returns a uniform random number between 0 & 1, using
 *       a Marsaglia-Zaman type subtract-with-borrow generator.
-*       Uses double precision, rather than integer, arithmetic
+*       Uses double precision, rather than integer, arithmetic 
 *       throughout because MZ's integer constants overflow
 *       32-bit integer storage (which goes from -2^31 to 2^31).
-*       Ideally, we would explicitly truncate all integer
+*       Ideally, we would explicitly truncate all integer 
 *       quantities at each stage to ensure that the double
 *       precision representations do not accumulate approximation
 *       error; however, on some machines the use of DNINT to
 *       accomplish this is *seriously* slow (run-time increased
-*       by a factor of about 3). This double precision version
+*       by a factor of about 3). This double precision version 
 *       has been tested against an integer implementation that
 *       uses long integers (non-standard and, again, slow) -
 *       the output was identical up to the 16th decimal place
@@ -210,11 +210,11 @@
        ID43 = 43
       ENDIF
 *
-*     The integer arithmetic there can yield X=0, which can cause
+*     The integer arithmetic there can yield X=0, which can cause 
 *     problems in subsequent routines (e.g. ZBQLEXP). The problem
-*     is simply that X is discrete whereas U is supposed to
+*     is simply that X is discrete whereas U is supposed to 
 *     be continuous - hence if X is 0, go back and generate another
-*     X and return X/B^2 (etc.), which will be uniform on (0,1/B).
+*     X and return X/B^2 (etc.), which will be uniform on (0,1/B). 
 *
       IF (X.LT.BINV) THEN
        B2 = B2*B
@@ -230,7 +230,7 @@
 *       Returns a random number uniformly distributed on (A,B)
 *
       DOUBLE PRECISION A,B,ZBQLU01,ZBQLUAB
-
+      
 *
 *       Even if A > B, this will work as B-A will then be -ve
 *
@@ -289,7 +289,7 @@
        ZBQLNOR = SPARE
        STATUS = 0
       ENDIF
-
+      
       ZBQLNOR = MU + (SIGMA*ZBQLNOR)
 
       END
@@ -313,20 +313,20 @@
        RETURN
       ENDIF
 *
-*	First step: if NP > 10, say, things will be expensive, and
-*	we can get into the right ballpark by guessing a value for
-*	ZBQLBIN (IZ, say), and simulating Y from a Beta distribution
-*	with parameters IZ and NN-IZ+1 (NN starts off equal to N).
-*	If Y is less than PP (which starts off as P) then the IZth order
-*	statistic from NN U(0,1) variates is less than P, and we know
-*	that there are at least IZ successes. In this case we focus on
-*	the remaining (NN-IZ) order statistics and count how many are
-*	less than PP, which is binomial (NN-IZ,(PP-Y)/(1-Y)).
-*	Otherwise, if Y is greater than PP there must be less
-*	than IZ successes, so we can count the number of order statistics
-*	under PP, which is binomial (IZ-1,P/Y). When we've got NN*PP
-*	small enough, we go to the next stage of the algorithm and
-*	generate the final bits directly.
+* First step: if NP > 10, say, things will be expensive, and 
+* we can get into the right ballpark by guessing a value for
+* ZBQLBIN (IZ, say), and simulating Y from a Beta distribution 
+* with parameters IZ and NN-IZ+1 (NN starts off equal to N).
+* If Y is less than PP (which starts off as P) then the IZth order 
+* statistic from NN U(0,1) variates is less than P, and we know 
+* that there are at least IZ successes. In this case we focus on 
+* the remaining (NN-IZ) order statistics and count how many are
+* less than PP, which is binomial (NN-IZ,(PP-Y)/(1-Y)). 
+* Otherwise, if Y is greater than PP there must be less 
+* than IZ successes, so we can count the number of order statistics
+* under PP, which is binomial (IZ-1,P/Y). When we've got NN*PP
+* small enough, we go to the next stage of the algorithm and 
+* generate the final bits directly.
 *
       NN = N
       PP = P
@@ -344,10 +344,10 @@
        GOTO 10
       ENDIF
 *
-*	PP is the probability of the binomial we're currently
-*	simulating from. For the final part, we simulate either number
-*	of failures or number of success, depending which is cheaper.
-*
+* PP is the probability of the binomial we're currently
+* simulating from. For the final part, we simulate either number 
+* of failures or number of success, depending which is cheaper.
+*      
  20   IF (PP.GT.0.5) THEN
        PPP = 1.0D0-PP
       ELSE
@@ -359,7 +359,7 @@
 *
 *     ZBQLGEO falls over for miniscule values of PPP, so ignore these
 *     (tiny probability of any successes in this case, anyway)
-*
+* 
       IF (PPP.GT.TINY) THEN
  30    G = G + ZBQLGEO(PPP)
        IF (G.LE.NN) THEN
@@ -377,30 +377,30 @@
 ******************************************************************
       FUNCTION ZBQLGEO(P)
 *
-*       Returns a random number geometrically distributed with
+*       Returns a random number geometrically distributed with 
 *       parameter P ie. mean 1/P
-*
-
+* 
+  
       DOUBLE PRECISION P,ZBQLU01,U,TINY
       INTEGER ZBQLGEO
 
       TINY = 1.0D-12
       ZBQLGEO = 0
-
+ 
       IF (.NOT.( (P.GE.0.0D0).AND.(P.LE.1.0D0) )) THEN
        WRITE(*,1)
        RETURN
       ENDIF
 
       IF (P.GT.0.9D0) THEN
- 10    ZBQLGEO = ZBQLGEO + 1
+ 10    ZBQLGEO = ZBQLGEO + 1 
        U = ZBQLU01(0.0D0)
        IF (U.GT.P) GOTO 10
       ELSE
        U = ZBQLU01(0.0D0)
 *
-*	For tiny P, 1-p will be stored inaccurately and log(1-p) may
-*	be zero. In this case approximate log(1-p) by -p
+* For tiny P, 1-p will be stored inaccurately and log(1-p) may
+* be zero. In this case approximate log(1-p) by -p
 *
        IF (P.GT.TINY) THEN
         ZBQLGEO = 1 + INT( DLOG(U)/DLOG(1.0D0-P) )
@@ -417,7 +417,7 @@
 *
 *       Returns a random number Poisson distributed with mean MU
 *
-
+      
       DOUBLE PRECISION ZBQLU01,X,Y,MU,PI
       DOUBLE PRECISION ZBQLLG,ZBQLGAM,MU1,TMP1,TMP2,T
       INTEGER ZBQLPOI,ZBQLBIN,K,INIT
@@ -444,13 +444,13 @@
 *
 *     For values of MU less than 1000, use order statistics - the Kth
 *     event in a Poisson process of rate MU has a Gamma distribution
-*     with parameters (MU,K); if it's greater than 1 we know that there
+*     with parameters (MU,K); if it's greater than 1 we know that there 
 *     are less than K events in (0,1) (and the exact number is binomial)
 *     and otherwise the remaining number is another Poisson. Choose K so
 *     that we'll get pretty close to 1 in the first go but are unlikely
 *     to overshoot it.
 *
- 19    IF (MU1.GT.1.0D1) THEN
+ 19    IF (MU1.GT.1.0D1) THEN        
         K = INT(MU1-DSQRT(MU1))
         Y = ZBQLGAM(DBLE(K),MU1)
         IF (Y.GT.1.0D0) THEN
@@ -469,7 +469,7 @@
         GOTO 20
        ENDIF
 *
-*     For really huge values of MU, use rejection sampling as in
+*     For really huge values of MU, use rejection sampling as in 
 *     Press et al (1992) - large numbers mean some accuracy may be
 *     lost, but it caps the execution time.
 *
@@ -488,7 +488,7 @@
         T = DLOG(0.9D0*(1.0D0+(Y*Y))) + T
         IF (DLOG(ZBQLU01(0.0D0)).GT.T) GOTO 30
        ENDIF
-      ENDIF
+      ENDIF 
 
  1    FORMAT(/5X,'****ERROR**** Illegal parameter value in ',
      +' ZBQLPOI',/)
@@ -517,9 +517,9 @@
        if (u.gt.exp(1.0d0)/(g+exp(1.0d0))) goto 891
        ZBQLGAM=((g+exp(1.0d0))*u/exp(1.0d0))**(1.0d0/g)
        if (v.gt.exp(-ZBQLGAM)) then
-	goto 889
+  goto 889
        else
-	goto 892
+  goto 892
        endif
 891    ZBQLGAM=-log((g+exp(1.0d0))*(1.0d0-u)/(g*exp(1.0d0)))
        if (v.gt.ZBQLGAM**(g-1.0)) goto 889
@@ -536,16 +536,16 @@
 777    u=ZBQLU01(0.0d0)
        v=ZBQLU01(0.0d0)
        if (g.gt.2.50d0) then
-	u=v+c5*(1.0d0-1.860d0*u)
-       endif
-       if (u.le.0.0d0.or.u.ge.1.0d0) goto 777
-       w=c2*v/u
-       if (c3*u+w+1.0d0/w.le.c4) goto 778
+  u=v+c5*(1.0d0-1.860d0*u)
+       endif 
+       if (u.le.0.0d0.or.u.ge.1.0d0) goto 777 
+       w=c2*v/u 
+       if (c3*u+w+1.0d0/w.le.c4) goto 778 
        if (c3*log(u)-log(w)+w.ge.1.0d0) goto 777
-778    ZBQLGAM=c1*w/h
+778    ZBQLGAM=c1*w/h 
        return
       ELSE
-       M = -(G-2.0D0)
+       M = -(G-2.0D0) 
       ENDIF
       R = 0.50D0
       a = ((g-1.0d0)/exp(1.0d0))**((g-1.0d0)/(r+1.0d0))
@@ -590,26 +590,26 @@
        WRITE(*,1)
        RETURN
       ENDIF
-*
+*      
 *       If parameters are too small, gamma subroutine tends to return zero
 *       as all the probability goes to the origin and we get rounding
 *       errors, even with double precision. In this case, we use Johnk's
 *       method, suitably scaled to avoid rounding errors as much as possible.
 *
-
+      
       IF ( (NU1.LT.0.9D0).AND.(NU2.LT.0.9D0) ) THEN
  10    X1 = ZBQLU01(0.0D0)
        X2 = ZBQLU01(0.0D0)
-       IF ( (X1**(1.0D0/NU1))+(X2**(1.0D0/NU2)).GT.1.0D0) GOTO 10
+       IF ( (X1**(1.0D0/NU1))+(X2**(1.0D0/NU2)).GT.1.0D0) GOTO 10    
        X1 = (DLOG(X2)/NU2) - (DLOG(X1)/NU1)
        ZBQLBET1 = (1.0D0 + DEXP(X1))**(-1)
-       IF (ZBQLBET1.GT.1.0D0) GOTO 10
+       IF (ZBQLBET1.GT.1.0D0) GOTO 10    
       ELSE
        X1 = ZBQLGAM(NU1,1.0D0)
        X2 = ZBQLGAM(NU2,1.0D0)
        ZBQLBET1 = X1/(X1+X2)
       ENDIF
-
+       
       RETURN
 
  1    FORMAT(/5X,'****ERROR**** Illegal parameter value in ',
@@ -622,7 +622,7 @@
 *
 *       Returns a random number, Weibull distributed with shape parameter
 *       A and location parameter B, i.e. density is
-*	f(x) = ( A/(B**A) ) * x**(A-1) * EXP( -(x/B)**A )
+* f(x) = ( A/(B**A) ) * x**(A-1) * EXP( -(x/B)**A )
 *
       DOUBLE PRECISION A,B,ZBQLU01,ZBQLWEI,U
 
@@ -632,7 +632,7 @@
        WRITE(*,1)
        RETURN
       ENDIF
-
+ 
       U = ZBQLU01(0.0D0)
       ZBQLWEI = B * ( (-DLOG(U))**(1.0D0/A) )
 
@@ -644,9 +644,9 @@
       FUNCTION ZBQLNB(R,P)
 *
 *       Returns a pseudo-random number according to a Negative
-*	Binomial distribution with parameters (R,P). NB these are
-*	both DOUBLE - it copes with non-integer R as well. The
-*       form of the distribution is *not* the no. of trials to
+* Binomial distribution with parameters (R,P). NB these are
+* both DOUBLE - it copes with non-integer R as well. The
+*       form of the distribution is *not* the no. of trials to 
 *       the Rth success - see documentation for full spec.
 *
       DOUBLE PRECISION R,P,ZBQLGAM,Y
@@ -671,7 +671,7 @@
 *
 *     Returns a random number, Pareto distributed with parameters
 *     A and B. The density is A*(B**A) / (B+X)**(A+1) for X > 0.
-*     (this is slightly nonstandard - see documentation in
+*     (this is slightly nonstandard - see documentation in 
 *     randgen.txt). The algorithm is straightforward - it uses the
 *     inverse CDF method.
 *
@@ -683,7 +683,7 @@
        WRITE(*,1)
        RETURN
       ENDIF
-
+ 
       U = ZBQLU01(0.0D0)
       ZBQLPAR = B * (U**(-1.0D0/A)-1.0D0)
 
@@ -702,7 +702,7 @@
       INTEGER INIT,I
       SAVE INIT,C,RLN2P,PI
       DATA INIT /0/
-      DATA (C(I),I=0,6) /
+      DATA (C(I),I=0,6) / 
      +              1.000000000190015D0,76.18009172947146D0,
      +              -86.50532032941677D0,24.01409824083091D0,
      +              -1.231739572450155D0,0.1208650973866179D-2,
@@ -719,7 +719,7 @@
 *
       IF (X.GE.1.0D0) THEN
        Z = X
-      ELSE
+      ELSE 
        Z = 2.0D0-X
        Z2 = 1.0D0-X
       ENDIF
@@ -746,3 +746,43 @@
       ENDIF
 
       END
+
+*************************************************************
+      FUNCTION ZEXPT01(lambda)
+
+      DOUBLE PRECISION lambda, ZBQLU01, ZEXPT01
+      DOUBLE PRECISION y, c1, c2, c3, tmp
+
+
+      c1 = (EXP(lambda) - 1.0D0) / lambda
+      c2 = LOG(2.0D0 / (1.0D0 + EXP(-lambda))) / lambda
+      c3 = (1 - EXP(-lambda)) / lambda
+
+      ZEXPT01 = c1 * ZBQLU01(0.0D0)
+      if (ZEXPT01 .lt. 1.0D0) then 
+        return
+      endif
+
+      do
+        ZEXPT01 = ZBQLU01(0.0D0)
+        if (ZEXPT01 .lt. c2) then
+          return
+        endif
+        y = 0.5D0 * ZBQLU01(0.0D0)
+        if (y .gt. (1.0D0 - ZEXPT01)) then
+          ZEXPT01 = 1.0D0 - ZEXPT01
+          y = 1.0D0 - y
+        endif
+        if (ZEXPT01 .le. (c3 * (1.0D0 - y))) then
+          return
+        endif
+        if ((y * c1) .le. (1.0D0 - ZEXPT01)) then
+          return
+        endif
+        tmp = EXP(lambda * (1.0D0 - ZEXPT01)) - 1.0D0
+        if ((y * c1 * lambda) .le. tmp) then
+          return
+        endif
+      end do
+
+      end
