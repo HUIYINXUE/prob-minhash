@@ -9,6 +9,8 @@ subroutine p_minhash_1(W, n, m, upper, z)
     integer :: i, j, k, d
     real(8) :: mu
     real(8) :: ZBQLEXP, ZBQLUAB
+    integer :: size
+    integer(4),allocatable :: seed(:)
 
     ! f2py intent(in) :: n, m, upper, W
     ! f2py intent(in,out) :: z
@@ -16,13 +18,20 @@ subroutine p_minhash_1(W, n, m, upper, z)
     mu = 1
     ! Initialize q
     do i = 1,m
-        q(m) = real(upper, 8)
+        q(i) = real(upper, 8)
     end do
 
-    
+    size = 16
     do d = 1,n
         inv = 1 / real(W(2, d), 8)
-        call ZBQLINI(W(1, d))
+        ! set seed
+        if(allocated(seed)) then
+            deallocate(seed)
+        endif
+        call random_seed(size=size)
+        allocate(seed(size))
+        seed = W(1, d)
+        call random_seed(put=seed)
         h = inv * ZBQLEXP(mu)
         do while (h .lt. MAXVAL(q))
             k = floor(ZBQLUAB(real(1, 8), real(m+1, 8)))

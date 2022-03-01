@@ -12,17 +12,26 @@ subroutine p_minhash_0(W, n, m, upper, z)
 
     ! f2py intent(in) :: n, m, upper, W
     ! f2py intent(in,out) :: z
+    integer :: size
+    integer(4),allocatable :: seed(:)
 
     mu = 1
     ! Initialize q
     do i = 1,m
-        q(m) = real(upper, 8)
+        q(i) = real(upper, 8)
     end do
 
-    
+    size = 16
     do i = 1,n
         inv = 1 / real(W(2, i), 8)
-        call ZBQLINI(W(1, i))
+        ! set seed
+        if(allocated(seed)) then
+            deallocate(seed)
+        endif
+        call random_seed(size=size)
+        allocate(seed(size))
+        seed = W(1, i)
+        call random_seed(put=seed)
         do k = 1,m
             h = inv * ZBQLEXP(mu)
             if (h .lt. q(k)) then

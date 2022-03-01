@@ -6,10 +6,12 @@ subroutine p_minhash_2(W, n, m, upper, z)
     integer(4), intent(inout), dimension(1:m) :: z
     real(8) :: inv, h
     real(8), dimension(1:m) :: q
-    integer :: i, j, k, d, c
+    integer :: i, j, k, d, c0
     real(8) :: mu
     real(8) :: ZBQLEXP, ZBQLUAB
     integer(4), dimension(1:m) :: v, g
+    integer :: size
+    integer(4),allocatable :: seed(:)
 
 
     ! f2py intent(in) :: n, m, upper, W
@@ -18,20 +20,28 @@ subroutine p_minhash_2(W, n, m, upper, z)
     mu = 1
     ! Initialize q
     do i = 1,m
-        q(m) = real(upper, 8)
-        v(m) = 0
-        g(m) = i
+        q(i) = real(upper, 8)
+        v(i) = 0
+        g(i) = i
     end do
 
     ! InitPermutationGenerator
-    c = 0
+    c0 = 0
+    size = 16
 
     do d = 1,n
         inv = 1 / real(W(2, d), 8)
-        call ZBQLINI(W(1, d))
+        ! set seed
+        if(allocated(seed)) then
+            deallocate(seed)
+        endif
+        call random_seed(size=size)
+        allocate(seed(size))
+        seed = W(1, d)
+        call random_seed(put=seed)
         ! ResetPermutationGenerator
         i = 1
-        c = c + 1
+        c0 = c0 + 1
         h = inv * ZBQLEXP(mu)
         do while(h .lt. MAXVAL(q))
             ! GenerateNextPermutationElement(R)
@@ -41,17 +51,17 @@ subroutine p_minhash_2(W, n, m, upper, z)
                 k = m-i
             end if
             j = i + k
-            if (v(j) .eq. c) then
+            if (v(j) .eq. c0) then
                 k = g(j)
             else
                 k = j
             end if
-            if (v(i) .eq. c) then
+            if (v(i) .eq. c0) then
                 g(j) = g(i)
             else
                 g(j) = i
             end if
-            v(j) = c
+            v(j) = c0
             if (h .lt. q(k)) then
                 q(k) = h
                 z(k) = W(1, d)

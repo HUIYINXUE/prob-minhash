@@ -6,10 +6,11 @@ subroutine p_minhash_3(W, n, m, upper, z)
     integer(4), intent(inout), dimension(1:m) :: z
     real(8) :: inv, h
     real(8), dimension(1:m) :: q
-    integer :: i, j, k, d, c
+    integer :: i, j, k, d
     real(8) :: lambda
-    real(8) :: ZBQLEXP, ZBQLUAB, ZEXPT01
-    integer(4), dimension(1:m) :: v, g
+    real(8) :: ZBQLUAB, ZEXPT01
+    integer :: size
+    integer(4),allocatable :: seed(:)
 
 
     ! f2py intent(in) :: n, m, upper, W
@@ -23,12 +24,20 @@ subroutine p_minhash_3(W, n, m, upper, z)
     lambda = LOG(1.0D0 + 1.0D0/(m-1.0D0))
     ! Initialize q
     do i = 1,m
-        q(m) = real(upper, 8)
+        q(i) = real(upper, 8)
     end do
 
+    size = 16
     do d = 1,n
         inv = 1 / real(W(2, d), 8)
-        call ZBQLINI(W(1, d))
+        ! set seed
+        if(allocated(seed)) then
+            deallocate(seed)
+        endif
+        call random_seed(size=size)
+        allocate(seed(size))
+        seed = W(1, d)
+        call random_seed(put=seed)
         h = inv * ZEXPT01(lambda)
         i =1
         do while (h .lt. MAXVAL(q))
