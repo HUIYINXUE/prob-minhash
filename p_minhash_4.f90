@@ -56,9 +56,6 @@ subroutine p_minhash_4(W, n, m, upper, z)
             ! GenerateNextPermutationElement(R)
             i = i + 1
             k = floor(ZBQLUAB(real(0, 8), real(m-i+1, 8)))
-            if (k .eq. m-i+1) then
-                k = m-i
-            end if
             j = i + k
             if (v(j) .eq. c0) then
                 k = g(j)
@@ -107,9 +104,6 @@ subroutine p_minhash_4(W, n, m, upper, z)
                     ! GenerateNextPermutationElement(R)
                     i = i + 1
                     k = floor(ZBQLUAB(real(0, 8), real(m-i+1, 8)))
-                    if (k .eq. m-i+1) then
-                        k = m-i
-                    end if
                     j = i + k
                     if (v(j) .eq. c0) then
                         k = g(j)

@@ -35,9 +35,6 @@ subroutine p_minhash_1(W, n, m, upper, z)
         h = inv * ZBQLEXP(mu)
         do while (h .lt. MAXVAL(q))
             k = floor(ZBQLUAB(real(1, 8), real(m+1, 8)))
-            if (k .eq. (m+1)) then
-                k = m
-            end if
             if (h .lt. q(k)) then
                 q(k) = h
                 z(k) = W(1, d)

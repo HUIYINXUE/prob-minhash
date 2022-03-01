@@ -75,9 +75,6 @@ if __name__ == "__main__":
       z, sig = prob_minhash_3(W=W1, upper=3000, z=[3000]*400, m=int(400))
       print(sig)
       W1 = np.array([[123,321,888,9,100],[1,3,10,2,1]])
-      z, sig = prob_minhash_3(W=W1, upper=3000, z=[3000]*400, m=int(400))
-      print(sig)
-      W1 = np.array([[123,321,888,9,100],[1,3,10,2,1]])
       z, sig = prob_minhash_4(W=W1, upper=3000, z=[3000]*400, m=int(400))
       print(sig)
 
